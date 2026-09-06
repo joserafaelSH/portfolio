@@ -13,7 +13,7 @@ function App() {
   const runFromTree = useCallback((raw: string) => submit(raw, { navigate }), [submit, navigate])
 
   return (
-    <div className="flex h-svh">
+    <div className="flex h-svh overflow-clip">
       <div className="min-w-0 flex-1">
         <Terminal />
       </div>

@@ -32,10 +32,9 @@ export function listDir(path: string): ListEntry[] | undefined {
 
 /**
  * Resolve a path to a readable file. If the path is a directory containing
- * an index.md (a project/article's own directory), transparently reads
- * that instead — so `cat /projects/task-queue` and `cat
- * /projects/task-queue/index.md` both work, and commands like `articles
- * <slug>` can resolve against the directory path alone.
+ * an index.md (a project's own directory), transparently reads that
+ * instead — so `cat /projects/task-queue` and `cat
+ * /projects/task-queue/index.md` both resolve to the same document.
  */
 export function readFile(path: string): FileNode | undefined {
   const node = getNode(path)

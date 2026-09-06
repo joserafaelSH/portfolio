@@ -8,7 +8,7 @@ function stripQuotes(value: string): string {
 
 /**
  * Hand-rolled frontmatter parser for the flat schema used by this site's
- * content (title, category, link, articleSlug, date, slug, tags, summary).
+ * content (title, category, link, summary).
  * No nested objects or YAML anchors are needed, so a real YAML library
  * (and its Node/Buffer-polyfill baggage in a browser bundle) is overkill.
  * The only array field is `tags`, written inline: tags: [go, concurrency]

@@ -17,7 +17,7 @@ registerCommand({
   summary: 'Print a file, or preview a binary/media file',
   usage: 'cat <path>',
   description:
-    'Prints a markdown file, or previews an image/video/PDF inline. Also works directly on a project or article directory. Example: cat /projects/task-queue',
+    'Displays a single file full-screen, replacing whatever is currently shown — a markdown file renders inline, an image/video/PDF previews inline. Also works directly on a project directory. Example: cat /projects/task-queue',
   run: (input, ctx) => {
     const rawArg = input.args[0]
     if (!rawArg) return { blocks: [errorBlock('cat: missing operand')] }
@@ -38,6 +38,7 @@ registerCommand({
     if (file.kind === 'markdown' && file.document) {
       return {
         blocks: [{ type: 'markdown', id: crypto.randomUUID(), html: renderMarkdown(file.document) }],
+        replace: true,
       }
     }
 
@@ -46,6 +47,7 @@ registerCommand({
       if (mediaKind) {
         return {
           blocks: [{ type: 'media', id: crypto.randomUUID(), mediaKind, url: file.url, name: file.name }],
+          replace: true,
         }
       }
     }

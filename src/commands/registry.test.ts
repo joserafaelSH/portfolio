@@ -14,9 +14,7 @@ describe('command registry', () => {
     const names = listCommands()
       .map((c) => c.name)
       .sort()
-    expect(names).toEqual(
-      ['about', 'articles', 'cat', 'cd', 'clear', 'help', 'ls', 'projects', 'resume', 'whoami'].sort(),
-    )
+    expect(names).toEqual(['about', 'cat', 'cd', 'clear', 'help', 'ls', 'projects', 'resume', 'whoami'].sort())
   })
 
   it('does not register a "blog" alias or removed commands', () => {
@@ -24,6 +22,7 @@ describe('command registry', () => {
     expect(getCommand('theme')).toBeUndefined()
     expect(getCommand('stats')).toBeUndefined()
     expect(getCommand('curl')).toBeUndefined()
+    expect(getCommand('articles')).toBeUndefined()
   })
 
   it('runs a command handler directly against a parsed input', () => {
@@ -38,7 +37,7 @@ describe('command registry', () => {
     const result = help.run(parseInput('help'), ctx)
     const text = result.blocks.map((b) => ('text' in b ? b.text : '')).join('\n')
     expect(text).toContain('projects [--category <name>]')
-    expect(text).toContain('articles [slug]')
+    expect(text).toContain('cat <path>')
   })
 
   it('clear returns an empty block list', () => {

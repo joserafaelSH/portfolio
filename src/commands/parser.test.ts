@@ -39,9 +39,9 @@ describe('parseInput', () => {
   })
 
   it('mixes positional args and flags', () => {
-    expect(parseInput('articles building-a-task-queue --format md')).toEqual({
-      command: 'articles',
-      args: ['building-a-task-queue'],
+    expect(parseInput('cat /projects/task-queue --format md')).toEqual({
+      command: 'cat',
+      args: ['/projects/task-queue'],
       flags: { format: 'md' },
     })
   })

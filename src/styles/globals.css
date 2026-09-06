@@ -55,6 +55,21 @@
   --sidebar-ring: #38bdf8;
 }
 
+/*
+ * `clip`, not `hidden`: both stop the page from visibly scrolling, but
+ * `hidden` still makes the element a scroll container that `scrollIntoView`
+ * (used by the scrollback's auto-scroll-to-bottom effect) can target —
+ * which was silently shifting #root's own scrollTop and clipping the
+ * pinned whoami header out of view. `clip` is never a scroll container,
+ * so scrollIntoView correctly skips straight to the scrollback's own
+ * overflow-y-auto viewport instead.
+ */
+html,
+body {
+  height: 100%;
+  overflow: clip;
+}
+
 body {
   margin: 0;
   background: var(--color-term-bg);
@@ -62,8 +77,11 @@ body {
   font-family: var(--font-mono);
 }
 
+/* The page itself never scrolls — only the scrollback and the tree/help
+   panels inside it do, each via their own overflow-y-auto region. */
 #root {
-  min-height: 100svh;
+  height: 100svh;
+  overflow: clip;
 }
 
 .term-clickable {

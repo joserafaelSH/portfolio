@@ -32,23 +32,34 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
     const parsed = parseInput(trimmed)
     const cmd = getCommand(parsed.command)
 
-    const resultBlocks: OutputBlock[] = cmd
+    const result = cmd
       ? cmd.run(parsed, {
           cwd: get().cwd,
           navigate,
           setCwd: (path) => set({ cwd: path }),
-        }).blocks
-      : [
-          {
-            type: 'error',
-            id: crypto.randomUUID(),
-            text: `command not found: ${parsed.command}`,
-          },
-        ]
+        })
+      : {
+          blocks: [
+            {
+              type: 'error' as const,
+              id: crypto.randomUUID(),
+              text: `command not found: ${parsed.command}`,
+            },
+          ],
+        }
 
     set((s) => ({
       history: [...s.history, trimmed],
-      blocks: cmd?.name === 'clear' ? [] : [...s.blocks, echo, ...resultBlocks],
+      // `clear` empties the scrollback outright; a `replace` result (e.g.
+      // viewing a single project) swaps it out for just this command's own
+      // output, so navigating to a project always clears whatever was
+      // shown before instead of piling on top of it.
+      blocks:
+        cmd?.name === 'clear'
+          ? []
+          : result.replace
+            ? [echo, ...result.blocks]
+            : [...s.blocks, echo, ...result.blocks],
     }))
   },
   clear: () => set({ blocks: [] }),

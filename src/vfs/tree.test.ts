@@ -7,7 +7,7 @@ describe('vfs tree', () => {
     expect(root?.type).toBe('dir')
 
     const entries = listDir('/')?.map((e) => e.name)
-    expect(entries).toEqual(expect.arrayContaining(['about.md', 'resume.pdf', 'projects', 'articles']))
+    expect(entries).toEqual(expect.arrayContaining(['about.md', 'resume.pdf', 'projects']))
   })
 
   it('resolves a project directory to its index.md document', () => {
@@ -15,11 +15,6 @@ describe('vfs tree', () => {
     expect(file?.kind).toBe('markdown')
     expect(file?.document?.frontmatter.title).toBe('Distributed Task Queue in Go')
     expect(file?.document?.frontmatter.category).toBe('go')
-  })
-
-  it('resolves an article directory and parses its tags array', () => {
-    const file = readFile('/articles/building-a-task-queue')
-    expect(file?.document?.frontmatter.tags).toEqual(['go', 'concurrency', 'distributed-systems'])
   })
 
   it('resolves co-located image assets to built URLs', () => {

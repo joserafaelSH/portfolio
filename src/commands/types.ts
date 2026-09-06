@@ -22,14 +22,6 @@ export type OutputBlock =
       slug: string
       link?: string
     }
-  | {
-      type: 'article-entry'
-      id: string
-      title: string
-      date?: string
-      tags: string[]
-      slug: string
-    }
   | { type: 'media'; id: string; mediaKind: 'pdf' | 'image' | 'video'; url: string; name: string }
 
 export interface CommandContext {
@@ -42,6 +34,8 @@ export interface CommandContext {
 export interface CommandResult {
   blocks: OutputBlock[]
   nextCwd?: string
+  /** When true, this result replaces the whole scrollback instead of appending to it. */
+  replace?: boolean
 }
 
 export type CommandHandler = (input: ParsedInput, ctx: CommandContext) => CommandResult

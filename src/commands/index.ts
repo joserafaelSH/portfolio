@@ -7,7 +7,6 @@ import './whoami'
 import './about'
 import './resume'
 import './projects'
-import './articles'
 
 export { getCommand, listCommands } from './registry'
 export { parseInput } from './parser'

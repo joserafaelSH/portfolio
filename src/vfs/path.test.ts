@@ -8,7 +8,7 @@ describe('resolvePath', () => {
   })
 
   it('resolves absolute paths independent of cwd', () => {
-    expect(resolvePath('/articles', '/projects/task-queue')).toBe('/projects/task-queue')
+    expect(resolvePath('/nope', '/projects/task-queue')).toBe('/projects/task-queue')
   })
 
   it('resolves relative paths against cwd', () => {
@@ -21,7 +21,7 @@ describe('resolvePath', () => {
   })
 
   it('resolves "~/" prefixed paths relative to root', () => {
-    expect(resolvePath('/projects', '~/articles')).toBe('/articles')
+    expect(resolvePath('/projects', '~/resume.pdf')).toBe('/resume.pdf')
   })
 
   it('handles "." as a no-op segment', () => {

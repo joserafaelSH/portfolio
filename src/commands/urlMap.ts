@@ -10,9 +10,9 @@ function matchSlug(pattern: RegExp, value: string): string | undefined {
  * Keeping both directions in one module is what stops them from drifting.
  *
  * v1 only deep-links the canonical destinations from the grilling session
- * (whoami/about/resume/projects/articles) plus `cat` on a project or
- * article's own directory. Arbitrary `cd`/`ls` browsing does not sync to
- * the URL — a deliberate scope cut, not an oversight.
+ * (whoami/about/resume/projects) plus `cat` on a project's own directory.
+ * Arbitrary `cd`/`ls` browsing does not sync to the URL — a deliberate
+ * scope cut, not an oversight.
  */
 export function commandToUrl(input: ParsedInput): string | undefined {
   switch (input.command) {
@@ -26,15 +26,10 @@ export function commandToUrl(input: ParsedInput): string | undefined {
       const category = typeof input.flags.category === 'string' ? input.flags.category : undefined
       return category ? `/projects?category=${encodeURIComponent(category)}` : '/projects'
     }
-    case 'articles':
-      return input.args[0] ? `/articles/${encodeURIComponent(input.args[0])}` : '/articles'
     case 'cat': {
       const arg = input.args[0] ?? ''
       const projectSlug = matchSlug(/^\/projects\/([^/]+)$/, arg)
-      if (projectSlug) return `/projects/${encodeURIComponent(projectSlug)}`
-      const articleSlug = matchSlug(/^\/articles\/([^/]+)$/, arg)
-      if (articleSlug) return `/articles/${encodeURIComponent(articleSlug)}`
-      return undefined
+      return projectSlug ? `/projects/${encodeURIComponent(projectSlug)}` : undefined
     }
     default:
       return undefined
@@ -50,11 +45,6 @@ export function urlToCommand(pathname: string, search: string): string {
     const category = new URLSearchParams(search).get('category')
     return category ? `projects --category ${category}` : 'projects'
   }
-
-  if (pathname === '/articles') return 'articles'
-
-  const articleSlug = matchSlug(/^\/articles\/([^/]+)$/, pathname)
-  if (articleSlug) return `articles ${articleSlug}`
 
   const projectSlug = matchSlug(/^\/projects\/([^/]+)$/, pathname)
   if (projectSlug) return `cat /projects/${projectSlug}`

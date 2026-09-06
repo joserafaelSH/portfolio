@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { OutputBlock } from '@/commands'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ArticleEntryBlock } from './blocks/ArticleEntryBlock'
 import { CommandEchoBlock } from './blocks/CommandEchoBlock'
 import { ListingBlock } from './blocks/ListingBlock'
 import { MarkdownBlock } from './blocks/MarkdownBlock'
@@ -22,7 +21,7 @@ export function Scrollback({ blocks, onRun }: ScrollbackProps) {
   }, [blocks])
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="min-h-0 flex-1">
       <div className="px-4 py-2">
         {blocks.map((block) => {
           switch (block.type) {
@@ -44,17 +43,6 @@ export function Scrollback({ blocks, onRun }: ScrollbackProps) {
                   category={block.category}
                   slug={block.slug}
                   link={block.link}
-                  onRun={onRun}
-                />
-              )
-            case 'article-entry':
-              return (
-                <ArticleEntryBlock
-                  key={block.id}
-                  title={block.title}
-                  date={block.date}
-                  tags={block.tags}
-                  slug={block.slug}
                   onRun={onRun}
                 />
               )

@@ -26,7 +26,7 @@ describe('ls', () => {
     expect(listing.type).toBe('listing')
     if (listing.type !== 'listing') throw new Error('unreachable')
     const names = listing.entries.map((e) => e.name)
-    expect(names).toEqual(expect.arrayContaining(['about.md', 'resume.pdf', 'projects', 'articles']))
+    expect(names).toEqual(expect.arrayContaining(['about.md', 'resume.pdf', 'projects']))
   })
 
   it('errors on a nonexistent path', () => {
@@ -49,16 +49,18 @@ describe('cd', () => {
 })
 
 describe('cat', () => {
-  it('renders a project directory as markdown and navigates', () => {
+  it('renders a project directory as markdown, navigates, and replaces the scrollback', () => {
     const ctx = makeCtx()
     const result = run('cat /projects/task-queue', ctx)
     expect(result.blocks[0].type).toBe('markdown')
     expect(ctx.navigate).toHaveBeenCalledWith('/projects/task-queue')
+    expect(result.replace).toBe(true)
   })
 
-  it('renders resume.pdf as a media block', () => {
+  it('renders resume.pdf as a media block that replaces the scrollback', () => {
     const result = run('cat /resume.pdf', makeCtx())
     expect(result.blocks[0]).toMatchObject({ type: 'media', mediaKind: 'pdf' })
+    expect(result.replace).toBe(true)
   })
 
   it('errors on a directory with no index.md via cat on a bare dir like /projects', () => {
@@ -112,26 +114,5 @@ describe('projects', () => {
   it('reports no matches for an unknown category', () => {
     const result = run('projects --category rust', makeCtx())
     expect(result.blocks[0]).toMatchObject({ type: 'text' })
-  })
-})
-
-describe('articles', () => {
-  it('lists all articles and navigates to /articles', () => {
-    const ctx = makeCtx()
-    const result = run('articles', ctx)
-    expect(result.blocks.some((b) => b.type === 'article-entry')).toBe(true)
-    expect(ctx.navigate).toHaveBeenCalledWith('/articles')
-  })
-
-  it('renders a single article by slug and navigates to its URL', () => {
-    const ctx = makeCtx()
-    const result = run('articles building-a-task-queue', ctx)
-    expect(result.blocks[0].type).toBe('markdown')
-    expect(ctx.navigate).toHaveBeenCalledWith('/articles/building-a-task-queue')
-  })
-
-  it('errors on an unknown slug', () => {
-    const result = run('articles nonexistent', makeCtx())
-    expect(result.blocks[0].type).toBe('error')
   })
 })

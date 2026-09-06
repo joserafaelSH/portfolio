@@ -8,7 +8,7 @@ registerCommand({
   summary: 'Change the current directory',
   usage: 'cd <path>',
   description:
-    'Changes the working directory. Accepts absolute paths (/projects), relative paths (../articles), and ~ for root. Example: cd /projects',
+    'Changes the working directory. Accepts absolute paths (/projects), relative paths (../projects), and ~ for root. Example: cd /projects',
   run: (input, ctx) => {
     const target = resolvePath(ctx.cwd, input.args[0] ?? '~')
     const node = getNode(target)
