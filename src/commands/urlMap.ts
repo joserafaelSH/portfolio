@@ -4,6 +4,11 @@ function matchSlug(pattern: RegExp, value: string): string | undefined {
   return pattern.exec(value)?.[1]
 }
 
+/** Shared by urlToCommand and the mobile router — both need to know "is this a project detail URL, and which one". */
+export function projectSlugFromPath(pathname: string): string | undefined {
+  return matchSlug(/^\/projects\/([^/]+)$/, pathname)
+}
+
 /**
  * Pure command <-> URL mapping, shared by commands (for ctx.navigate calls)
  * and the router bootstrap effect (for reconstructing state from a URL).
@@ -27,8 +32,7 @@ export function commandToUrl(input: ParsedInput): string | undefined {
       return category ? `/projects?category=${encodeURIComponent(category)}` : '/projects'
     }
     case 'cat': {
-      const arg = input.args[0] ?? ''
-      const projectSlug = matchSlug(/^\/projects\/([^/]+)$/, arg)
+      const projectSlug = projectSlugFromPath(input.args[0] ?? '')
       return projectSlug ? `/projects/${encodeURIComponent(projectSlug)}` : undefined
     }
     default:
@@ -46,7 +50,7 @@ export function urlToCommand(pathname: string, search: string): string {
     return category ? `projects --category ${category}` : 'projects'
   }
 
-  const projectSlug = matchSlug(/^\/projects\/([^/]+)$/, pathname)
+  const projectSlug = projectSlugFromPath(pathname)
   if (projectSlug) return `cat /projects/${projectSlug}`
 
   return 'help'

@@ -55,7 +55,21 @@
   --sidebar-ring: #38bdf8;
 }
 
+body {
+  margin: 0;
+  background: var(--color-term-bg);
+  color: var(--color-term-fg);
+  font-family: var(--font-mono);
+}
+
 /*
+ * The fixed-viewport, internal-scroll-only model below exists so the
+ * terminal's pinned header and input bar never get pushed off-screen by a
+ * growing scrollback — but the terminal only renders at md and up (see
+ * App.tsx / useIsMobile). Below md, MobileApp's Home/ProjectPage are plain
+ * stacked content meant to scroll the page normally, like any webpage, so
+ * this is scoped to md+ rather than applied globally.
+ *
  * `clip`, not `hidden`: both stop the page from visibly scrolling, but
  * `hidden` still makes the element a scroll container that `scrollIntoView`
  * (used by the scrollback's auto-scroll-to-bottom effect) can target —
@@ -64,24 +78,17 @@
  * so scrollIntoView correctly skips straight to the scrollback's own
  * overflow-y-auto viewport instead.
  */
-html,
-body {
-  height: 100%;
-  overflow: clip;
-}
+@media (min-width: 768px) {
+  html,
+  body {
+    height: 100%;
+    overflow: clip;
+  }
 
-body {
-  margin: 0;
-  background: var(--color-term-bg);
-  color: var(--color-term-fg);
-  font-family: var(--font-mono);
-}
-
-/* The page itself never scrolls — only the scrollback and the tree/help
-   panels inside it do, each via their own overflow-y-auto region. */
-#root {
-  height: 100svh;
-  overflow: clip;
+  #root {
+    height: 100svh;
+    overflow: clip;
+  }
 }
 
 .term-clickable {

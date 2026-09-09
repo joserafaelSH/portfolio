@@ -2,10 +2,14 @@ import { useCallback, useEffect } from 'react'
 import { useLocation, useNavigate, useNavigationType } from 'react-router-dom'
 import { urlToCommand } from '@/commands/urlMap'
 import { useTerminalStore } from '@/state/terminalStore'
+import { HelpPanel } from '../tree/HelpPanel'
+import { ProjectsTree } from '../tree/ProjectsTree'
+import { ResumeLink } from '../tree/ResumeLink'
 import { InputLine } from './InputLine'
 import { Scrollback } from './Scrollback'
 import { WhoamiHeader } from './WhoamiHeader'
 
+/** Only ever mounted at md and up — App renders MobileApp instead below that. */
 export function Terminal() {
   const blocks = useTerminalStore((s) => s.blocks)
   const submit = useTerminalStore((s) => s.submit)
@@ -33,10 +37,19 @@ export function Terminal() {
   }, [location.pathname, location.search, navigationType])
 
   return (
-    <div className="flex h-full flex-col bg-term-bg font-mono text-sm text-term-fg">
+    <div className="flex h-svh flex-col overflow-clip bg-term-bg font-mono text-sm text-term-fg">
       <WhoamiHeader />
-      <Scrollback blocks={blocks} onRun={runCommand} />
-      <InputLine onSubmit={runCommand} />
+      <div className="flex min-h-0 flex-1">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <Scrollback blocks={blocks} onRun={runCommand} />
+          <InputLine onSubmit={runCommand} />
+        </div>
+        <aside className="flex w-64 shrink-0 flex-col overflow-y-auto border-l border-term-fg/10 bg-term-bg/60">
+          <ResumeLink />
+          <ProjectsTree onRun={runCommand} />
+          <HelpPanel onRun={runCommand} />
+        </aside>
+      </div>
     </div>
   )
 }
